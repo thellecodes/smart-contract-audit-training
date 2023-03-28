@@ -16,23 +16,26 @@ async function deploySavings() {
 }
 
 async function donate() {
-  //   await bankSavings.connect(owner).donate(thelleToken.address, 10);
   const result = await (
-    await bankSavings.connect(operator).donate(thelleToken.address, 50)
+    await bankSavings.connect(owner).donate(thelleToken.address, 50)
   ).wait();
 
   const event = result.events?.find(({ topics }) =>
-    topics.includes(ethers.utils.id("Donate(address,uint)"))
+    topics.includes(ethers.utils.id("Donated(address,uint)"))
   )?.args;
-
-  console.log(event);
 
   return event;
 }
 
+async function balanceOf(_who) {
+  const result = await bankSavings.connect(_who).balanceOf(_who.getAddress());
+
+  return result;
+}
+
 describe("BankSavings", function () {
   this.beforeAll(async () => {
-    [owner, launcher, ...restAccounts] = await ethers.getSigners();
+    [owner, operator, launcher, ...restAccounts] = await ethers.getSigners();
 
     // Deploy ThelleToken Contract
     const ThelleToken = await ethers.getContractFactory("ThelleToken");
@@ -49,6 +52,14 @@ describe("BankSavings", function () {
       expect(result).to.equal(thelleToken.address);
     });
 
-    it("Should allow sender to donate", async () => {});
+    it("Should allow sender to donate", async () => {
+      const event = await donate();
+      expect(event?.token).to.not.be.null;
+    });
+
+    it("Should get balance of an address", async () => {
+      const result = Number(await balanceOf(operator));
+      expect(result).to.be.above(0, "Balance is (0)");
+    });
   });
 });
