@@ -2,15 +2,15 @@ import * as dotenv from "dotenv";
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
+import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-etherscan";
 import "@typechain/hardhat";
-import "@nomicfoundation/hardhat-toolbox";
 import "xdeployer";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-contract-sizer";
 import "hardhat-abi-exporter";
-import "@nomicfoundation/hardhat-toolbox";
+// import "@nomiclabs/hardhat-waffle";
 dotenv.config();
 
 task("accounts", "Prints the list of accounts", async (_, hre) => {
