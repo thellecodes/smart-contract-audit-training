@@ -4,10 +4,11 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BankSavings {
+    event Donated(address _who, uint _amount);
+
     using SafeMath for uint256;
     mapping(address => uint) public balances;
     address public token; // contract token
-
     bool internal lock;
 
     constructor(address _token) {
@@ -18,7 +19,7 @@ contract BankSavings {
     function donate(address _token, uint _amount) public payable {
         uint balance = IERC20(_token).balanceOf(msg.sender);
         require(balance > 0, "Insufficient balance");
-
+        emit Donated(_token, _amount);
         balances[msg.sender] = _amount;
     }
 

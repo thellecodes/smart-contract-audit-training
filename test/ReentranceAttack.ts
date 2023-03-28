@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 import { BankSavings, ThelleToken } from "../typechain";
 // const ethers = require("ethers");
 
-let owner: Signer, launcher: Signer, restAccounts: Signer[];
+let owner: Signer, launcher: Signer, restAccounts: Signer[], operator: Signer;
 
 let thelleToken: ThelleToken;
 let bankSavings: BankSavings;
@@ -16,7 +16,18 @@ async function deploySavings() {
 }
 
 async function donate() {
-  await bankSavings.connect(owner).donate(thelleToken.address, 10);
+  //   await bankSavings.connect(owner).donate(thelleToken.address, 10);
+  const result = await (
+    await bankSavings.connect(operator).donate(thelleToken.address, 50)
+  ).wait();
+
+  const event = result.events?.find(({ topics }) =>
+    topics.includes(ethers.utils.id("Donate(address,uint)"))
+  )?.args;
+
+  console.log(event);
+
+  return event;
 }
 
 describe("BankSavings", function () {
@@ -37,5 +48,7 @@ describe("BankSavings", function () {
       const result = await bankSavings.token();
       expect(result).to.equal(thelleToken.address);
     });
+
+    it("Should allow sender to donate", async () => {});
   });
 });
