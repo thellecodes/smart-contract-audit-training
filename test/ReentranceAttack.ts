@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { Signer } from "ethers";
 import { ethers } from "hardhat";
 import { BankSavings, ThelleToken } from "../typechain";
-// const ethers = require("ethers");
 
 let owner: Signer, launcher: Signer, restAccounts: Signer[], operator: Signer;
 
@@ -27,7 +26,7 @@ async function donate() {
   return event;
 }
 
-async function balanceOf(_who) {
+async function balanceOf(_who: Signer) {
   const result = await bankSavings.connect(_who).balanceOf(_who.getAddress());
 
   return result;

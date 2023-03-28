@@ -10,7 +10,6 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-contract-sizer";
 import "hardhat-abi-exporter";
-// import "@nomiclabs/hardhat-waffle";
 dotenv.config();
 
 task("accounts", "Prints the list of accounts", async (_, hre) => {
