@@ -19,9 +19,9 @@ contract BankSavings {
     //donate
     function donate(address _token, uint _amount) public payable {
         uint balance = IERC20(_token).balanceOf(msg.sender);
-        require(balance > 0, "Insufficient balance");
+        require(balance > _amount, "Insufficient balance");
         emit Donated(_token, _amount);
-        balances[msg.sender] = _amount;
+        balances[msg.sender] += _amount;
     }
 
     //check balance

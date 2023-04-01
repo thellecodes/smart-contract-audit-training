@@ -5,12 +5,14 @@ import {
   ReentrancyAttackOnBankSavings,
   BankSavings,
   ThelleToken,
+  ERC20,
 } from "../typechain";
 
 let owner: Signer, launcher: Signer, restAccounts: Signer[], operator: Signer;
 let reentrancyHack: ReentrancyAttackOnBankSavings;
 let bankSavings: BankSavings;
 let thelleToken: ThelleToken;
+let ierc20: ERC20;
 
 // deploys savings contract
 async function deploySavings() {
@@ -22,12 +24,6 @@ async function deploySavings() {
 async function deployThelleToken() {
   const ThelleToken = await ethers.getContractFactory("ThelleToken");
   thelleToken = await ThelleToken.deploy(1000000000);
-}
-
-async function transferSomeTokensToHackContract(_amount: number, _who: Signer) {
-  const result = await thelleToken
-    .connect(_who)
-    .transfer(reentrancyHack.address, _amount);
 }
 
 async function getBalance() {
@@ -65,25 +61,41 @@ describe("ReentrancyAttackOnBankSavings", function () {
   });
 
   describe("Bank Savings hack", () => {
-    it("Should check thelle token total supply", async () => {
+    it("Should check deployer balance", async () => {
       const result = await getBalance();
       expect(result).to.equal(1000000000);
     });
 
-    it("Should transfer thelle token to Reentrancy Contract", async () => {
-      const result = await transferSomeTokensToHackContract(1000, owner);
+    it("should donate and attack", async () => {
+      const _amount = 6000;
+
+      //transfer some thelleTokens to operator
+      await thelleToken.connect(owner).transfer(operator.getAddress(), _amount);
+
+      //donate to contract
+      await bankSavings.connect(owner).donate(thelleToken.address, _amount);
+
+      //transfer to reentrant contract
+      await thelleToken
+        .connect(owner)
+        .transfer(reentrancyHack.address, _amount);
+
+      //confirm deposit
+      const firstResult = await thelleToken.balanceOf(reentrancyHack.address);
+      expect(firstResult).to.equal(_amount);
+
+      // check bankSavings balance
+      const secondResult = await thelleToken.balanceOf(bankSavings.address);
+      expect(secondResult).to.equal(_amount);
+
+      //attack the contract
+      // await reentrancyHack.connect(operator).attack();
+
+      //check operator balance
+      const thirdResult = Number(
+        await thelleToken.balanceOf(operator.getAddress())
+      );
+      expect(thirdResult).to.equal(6000);
     });
-
-    //TODO: multiple donations
-
-    //TODO: checks banksavings balance
-
-    //TODO: attacks the contract
-
-    //TODO: check bank savings balance
-
-    //TODO: check Reentrancy contract balance
-
-    it("Should attack bank savings", async () => {});
   });
 });

