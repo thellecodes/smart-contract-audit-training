@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
-interface IReentrancy {
-    function donate(address) external payable;
+import "../interfaces/IReentrancyAttackOnBankSavings.sol";
 
-    function withdraw(uint256) external;
-}
-
-contract Hack {
-    IReentrancy private immutable target;
+contract ReentrancyAttackOnBankSavings {
+    IReentrancyAttackOnBankSavings private immutable target;
 
     constructor(address _target) {
-        target = IReentrancy(_target);
+        target = IReentrancyAttackOnBankSavings(_target);
     }
 
     // NOTE: attack cannot be called inside constructor

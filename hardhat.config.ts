@@ -146,12 +146,14 @@ const config: HardhatUserConfig = {
     except: [],
   },
   abiExporter: {
-    path: "./abis",
-    runOnCompile: true,
     clear: true,
     flat: true,
-    only: [],
+    except: ["node_modules"],
     spacing: 2,
+    outputDir: "./abis",
+    path: "./abis",
+    runOnCompile: true,
+    only: [],
     format: "json",
   },
   etherscan: {

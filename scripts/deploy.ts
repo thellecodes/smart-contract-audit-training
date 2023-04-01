@@ -13,6 +13,17 @@ async function main() {
   const BankSavings = await ethers.getContractFactory("BankSavings");
   const BankSavingsContract = await BankSavings.deploy(ThelleContract.address);
   console.log("BankSavings Contract Address: ", BankSavingsContract.address);
+
+  //bank savings reenetrancy contract
+  const ReentrancyAttackOnBankSavings = await ethers.getContractFactory(
+    "ReentrancyAttackOnBankSavings"
+  );
+  const ReentrancyAttackOnBankSavingsContract =
+    await ReentrancyAttackOnBankSavings.deploy(BankSavingsContract.address);
+  console.log(
+    "ReentrancyAttackOnBankSavings Contract address",
+    ReentrancyAttackOnBankSavingsContract.address
+  );
 }
 
 main().catch((error) => {

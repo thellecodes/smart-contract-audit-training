@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract BankSavings {
     event Donated(address _who, uint _amount);
+    event Withdraw(address _who, uint _amount);
 
     using SafeMath for uint256;
     mapping(address => uint) public balances;
@@ -35,6 +36,7 @@ contract BankSavings {
             (bool result, ) = msg.sender.call{value: _amount}("");
             if (result) {
                 _amount;
+                emit Withdraw(msg.sender, _amount);
             }
             balances[msg.sender] -= _amount;
         }
@@ -45,9 +47,15 @@ contract BankSavings {
         if (balances[msg.sender] >= _amount) {
             balances[msg.sender] -= _amount;
 
+            emit Withdraw(msg.sender, _amount);
             (bool result, ) = msg.sender.call{value: _amount}("");
+
             require(result);
         }
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return balances[msg.sender];
     }
 
     // reentrance lock
