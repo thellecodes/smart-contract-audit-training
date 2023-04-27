@@ -23,7 +23,7 @@
   "homepage": "https://github.com/thellecodes/smart-contract-audit-training#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.2",
-    "@tenderly/hardhat-tenderly": "^1.6.1",
+    "@tenderly/hardhat-tenderly": "^1.7.0",
     "chai": "^4.3.7",
     "dotenv": "^16.0.3",
     "hardhat": "^2.13.0"
