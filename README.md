@@ -1,6 +1,4 @@
-# My Journey My Glory
-
-- I started smart contract audits, here you can learn more from my finds and personal research
+# Smart Contract Audits
 
 ### Articles
 
